@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>NKAI 资料共享计划</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css" />
+  <style>
+    :root { --theme-color: #702670; }
+    .sidebar-nav li > strong { cursor: pointer; display: block; padding: 5px 0; }
+  </style>
+</head>
+<body>
+  <div id="app">加载中...</div>
+  <script>
+    window.$docsify = {
+      name: 'NKAI Share',
+      repo: 'https://github.com/nkai-share/nankai-ai-Datashare',
+      loadSidebar: true,
+      loadNavbar: true,
+      homepage: 'README.md',
+      auto2top: true,
+      relativePath: false, 
+      subMaxLevel: 3, 
+      sidebarDisplayLevel: 1,
+      
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: '搜索文件名...',
+        noData: '未找到资料',
+        depth: 2,
+      },
+
+      plugins: [
+        function(hook, vm) {
+          hook.doneEach(function() {
+            var fileExts = ['.pdf', '.zip', '.rar', '.7z', '.docx', '.doc', '.pptx', '.ppt', '.xlsx', '.jpg', '.png', '.txt'];
+            var links = document.querySelectorAll('.sidebar-nav a, .content a');
+            var baseHref = window.location.pathname;
+
+            links.forEach(function(link) {
+              var href = link.getAttribute('href');
+              
+              if (!href || (href.startsWith('#') && !href.startsWith('#/'))) return;
+
+              var isAttachment = fileExts.some(function(ext) {
+                return href.toLowerCase().includes(ext);
+              });
+
+              if (isAttachment) {
+                var cleanPath = href.replace('#/', '');
+                if (!cleanPath.startsWith('http') && !cleanPath.startsWith('/')) {
+                   link.setAttribute('href', baseHref + cleanPath);
+                } else if (cleanPath.startsWith('/')) {
+                   link.setAttribute('href', cleanPath);
+                }
+                link.setAttribute('target', '_blank');
+              }
+            });
+          });
+        }
+      ]
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+</body>
+</html>
